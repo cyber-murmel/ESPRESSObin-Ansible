@@ -1,0 +1,32 @@
+---
+- hosts: espressobin
+  tasks:
+    - name: Update cache and upgrade
+      pacman:
+        update_cache: yes
+        upgrade: yes
+      become: yes
+      tags: install
+    - name: Install common packages
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+      - curl
+      - htop
+      - vim
+      - zsh grml-zsh-config
+      - git
+      - screen
+      become: yes
+      tags: install
+    - name: "Set configs for user {{ ansible_user }}"
+      user:
+        name: "{{ ansible_user }}"
+        shell: /usr/bin/zsh
+      become: yes
+    - name: "Touch .zshrc for {{ ansible_user }}"
+      file:
+        path: "/home/{{ ansible_user }}/.zshrc"
+        state: file
+        mode: 0644

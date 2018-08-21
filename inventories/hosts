@@ -1,0 +1,9 @@
+---
+all:
+  hosts:
+    espressobin:
+      ansible_host: 10.42.23.143
+      ansible_user: alarm
+      ansible_ssh_pass: alarm
+      ansible_become_method: sudo
+      ansible_sudo_pass: alarm

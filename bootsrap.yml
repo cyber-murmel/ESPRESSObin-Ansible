@@ -1,0 +1,26 @@
+---
+  - hosts: all
+    gather_facts: no
+    remote_user: alarm
+    tasks:
+      - name: Initialize the pacman keyring and populate the Arch Linux ARM package signing keys
+        raw: |
+          echo root | su -c '
+            pacman-key --init
+            pacman-key --populate archlinuxarm
+            pacman -Sy'
+      - name: Install python python-pexpect sudo
+        raw: |
+          echo root | su -c '
+            pacman -S python sudo --noconfirm'
+      - name: Create sudo group, add alarm to it and create /etc/sudoers.d/sudo
+        raw: |
+          echo root | su -c '
+            groupadd -f sudo
+            usermod alarm -aG sudo
+            echo "%sudo   ALL=(ALL) ALL" > /etc/sudoers.d/sudo'
+      - name: Set authorized key took from file
+        authorized_key:
+          user: alarm
+          state: present
+          key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
