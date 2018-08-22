@@ -3,7 +3,12 @@
 based on [archlinux ARM entry](https://archlinuxarm.org/platforms/armv8/marvell/espressobin)
 
 
-## Make bootable SD card
+## Preperation
+
+These are the Steps you can take to get a running ESPRESSObin with [Arch Linux](https://archlinuxarm.org/platforms/armv8/marvell/espressobin).
+
+
+### Make bootable SD card
 
 My SD card is `/dev/mmcblk0`.
 ```bash
@@ -25,7 +30,7 @@ sync
 ```
 
 
-## U-Boot configuration
+### U-Boot configuration
 
 Plug SD card into ESPRESSObin, connect ESPRESSObin to your machine via Micro USB, connect to LAN via Ethernet port nexto USB3.0 and supply 12VDC.
 
@@ -42,13 +47,41 @@ Login with `alarm`:`alarm`
 ```bash
 ### Get IP address
 ip --brief --color address list dev wan
+exit
 ```
+Exit picocom with `Ctrl+a+c`.
 
-
-## Connect via SSH
+### Connect via SSH
 
 To have the SSH server in you `known_hosts` file connect per SSH.
 
 ```bash
 ssh alarm@10.42.23.143
+# You don't need to log in.
+# Exit with Ctrl+c
+```
+
+
+## Running Ansible
+
+Change the `ansible_host` in the `inventories/hosts` file to the IP address of your device.
+
+
+### Bootstrapping
+
+The first part is to run the `bootstrap.yml` This file is quite dirty code (Ansible's [raw module](https://docs.ansible.com/ansible/2.6/modules/raw_module.html)). It needs onlye to be run once. The purpose is to upgrade the machine, install essential packages, give sudo rights to the `alarm` user and copy over your ssh key.
+
+It expects you public ssh key in `~/.ssh/id_rsa.pub`.
+
+```bash
+ansible-playbook bootsrap.yml
+```
+
+Once this is done, you should be able to login to the machine without a password prompt. `ssh alarm@192.168.188.107`
+
+
+### Running the Main Playbook
+
+```bash
+ansible-playbook site.yml
 ```
