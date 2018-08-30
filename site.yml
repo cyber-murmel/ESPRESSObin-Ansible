@@ -1,6 +1,6 @@
 ---
 - hosts: espressobin
-  tasks:
+  pre_tasks:
     - name: Update cache and upgrade
       pacman:
         update_cache: yes
@@ -12,12 +12,12 @@
         name: "{{ item }}"
         state: latest
       with_items:
-      - curl
       - htop
       - vim
       - zsh grml-zsh-config
       - git
       - screen
+      - iperf3
       become: yes
       tags: install
     - name: "Set configs for user {{ ansible_user }}"
@@ -25,8 +25,26 @@
         name: "{{ ansible_user }}"
         shell: /usr/bin/zsh
       become: yes
-    - name: "Touch .zshrc for {{ ansible_user }}"
-      file:
-        path: "/home/{{ ansible_user }}/.zshrc"
-        state: file
+    - name: "Make sure .zshrc exists for {{ ansible_user }}"
+      copy:
+        content: ""
+        dest: "/home/{{ ansible_user }}/.zshrc"
+        force: no
         mode: 0644
+  roles:
+    - ssh_server
+    - role: dns_server
+      tags: dns_server
+    - role: wifi_ap
+      tags: wifi_ap
+      ssid: "Hammer WG"
+      passphrase: "Hammer Kirche"
+      freq_band: 5
+    - role: wifi_ap
+      tags: wifi_ap
+      ssid: "Hammer WG legacy"
+      passphrase: "Hammer Kirche"
+      freq_band: 2.4
+    # - role: PPPoE
+    #   tags: PPPoE
+    # - port_knocking

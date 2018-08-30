@@ -3,13 +3,13 @@
     gather_facts: no
     remote_user: alarm
     tasks:
-      - name: Initialize the pacman keyring and populate the Arch Linux ARM package signing keys
+      - name: Initialize the pacman keyring, populate the Arch Linux ARM package signing keys and upgrade
         raw: |
           echo root | su -c '
             pacman-key --init
             pacman-key --populate archlinuxarm
-            pacman -Sy'
-      - name: Install python python-pexpect sudo
+            pacman -Syu --noconfirm'
+      - name: Install python sudo
         raw: |
           echo root | su -c '
             pacman -S python sudo --noconfirm'

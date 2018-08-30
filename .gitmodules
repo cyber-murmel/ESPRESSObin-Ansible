@@ -1,0 +1,6 @@
+[submodule "roles/wifi_ap"]
+	path = roles/wifi_ap
+	url = git@github.com:cyber-murmel/ansible-role-WiFi-AP.git
+[submodule "roles/dns_server"]
+	path = roles/dns_server
+	url = git@github.com:cyber-murmel/ansible-role-dns-server.git
