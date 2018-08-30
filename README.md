@@ -2,6 +2,7 @@
 
 based on [archlinux ARM entry](https://archlinuxarm.org/platforms/armv8/marvell/espressobin)
 
+Clone with `git clone --recursive`
 
 ## Preperation
 

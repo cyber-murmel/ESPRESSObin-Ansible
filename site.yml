@@ -18,6 +18,7 @@
       - git
       - screen
       - iperf3
+      - python-pyopenssl
       become: yes
       tags: install
     - name: "Set configs for user {{ ansible_user }}"
@@ -31,20 +32,49 @@
         dest: "/home/{{ ansible_user }}/.zshrc"
         force: no
         mode: 0644
+    # - name: Making /etc/ssl/private secure
+    #   file:
+    #     group: root
+    #     mode: '700'
+    #     owner: root
+    #     path: /etc/ssl/private
+    #   become: yes
+    #   tags: ssl
+    # - name: Generating OpenSSL private key
+    #   openssl_privatekey:
+    #     group: root
+    #     mode: '600'
+    #     owner: root
+    #     path: /etc/ssl/private/gateway.lan.pem
+    #   become: yes
+    #   tags: ssl
+    # - name: Generate a Self Signed OpenSSL certificate
+    #   openssl_certificate:
+    #     group: root
+    #     mode: '600'
+    #     owner: root
+    #     path: /etc/ssl/gateway.lan.pem
+    #     privatekey_path: /etc/ssl/private/gateway.lan.pem
+    #     csr_path: /etc/ssl/gateway.lan.csr
+    #     provider: selfsigned
+    #   become: yes
+    #   tags: ssl
   roles:
     - ssh_server
-    - role: dns_server
-      tags: dns_server
+    # - role: dns_server
+    #   tags: dns_server
     - role: wifi_ap
       tags: wifi_ap
-      ssid: "Hammer WG"
-      passphrase: "Hammer Kirche"
+      ssid: "SSID"
+      passphrase: "psk"
       freq_band: 5
     - role: wifi_ap
       tags: wifi_ap
-      ssid: "Hammer WG legacy"
-      passphrase: "Hammer Kirche"
+      ssid: "SSID legacy"
+      passphrase: "psk"
       freq_band: 2.4
+    - role: nextcloud
+      tags: nextcloud
     # - role: PPPoE
     #   tags: PPPoE
     # - port_knocking
